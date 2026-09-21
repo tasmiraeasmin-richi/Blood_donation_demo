@@ -1,0 +1,6 @@
+import os
+
+SECRET_KEY = os.getenv("RAKTOSETU_SECRET_KEY", "dev-secret-key-change-me")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+RESET_TOKEN_EXPIRE_MINUTES = 30
