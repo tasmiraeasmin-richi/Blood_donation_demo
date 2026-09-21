@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* ─── RaktoSetu Design Tokens ─────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    /* Primary: blood red — trust, urgency, healthcare */
+    --color-primary:     #C0152A;
+    --color-primary-dk:  #960F1F;
+    --color-primary-lt:  #F9E8EA;
+
+    /* Surface */
+    --color-surface:     #FFFFFF;
+    --color-surface-2:   #F7F7F8;
+    --color-surface-3:   #EEEEF0;
+
+    /* Text */
+    --color-text:        #111318;
+    --color-text-muted:  #6B6E7A;
+    --color-text-faint:  #A8ABB6;
+
+    /* Semantic */
+    --color-success:     #1A7F4B;
+    --color-success-bg:  #EAFAF2;
+    --color-warning:     #B45309;
+    --color-warning-bg:  #FEF9EC;
+    --color-danger:      #C0152A;
+    --color-danger-bg:   #F9E8EA;
+    --color-info:        #1D6FA4;
+    --color-info-bg:     #EBF4FB;
+    --color-neutral:     #4B5261;
+    --color-neutral-bg:  #F0F1F4;
+
+    /* Urgency */
+    --color-critical:    #C0152A;
+    --color-urgent:      #B45309;
+    --color-normal:      #1A7F4B;
+
+    /* Spacing scale */
+    --radius-card:       0.75rem;
+    --radius-btn:        0.5rem;
+    --shadow-card:       0 1px 4px 0 rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.05);
+    --shadow-modal:      0 8px 40px 0 rgba(0,0,0,0.16);
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--color-text);
+    background: var(--color-surface-2);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-text);
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--color-primary-dk);
+  }
+
+  /* Remove blue outline; add visible focus ring */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ─── DaisyUI Theme Override ──────────────────────────────────────────────── */
+@plugin "daisyui" {
+  themes: ["light"];
+}
+
+/* ─── Utility Classes ─────────────────────────────────────────────────────── */
+@layer utilities {
+  .card-rs {
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .text-primary-rs { color: var(--color-primary); }
+  .bg-primary-rs   { background: var(--color-primary); }
+
+  .badge-critical {
+    background: var(--color-danger-bg);
+    color: var(--color-critical);
+    border: 1px solid #f5c6cb;
+  }
+  .badge-urgent {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+    border: 1px solid #fde68a;
+  }
+  .badge-normal {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+    border: 1px solid #a7f3d0;
+  }
+
+  .page-container {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .page-container { padding-inline: 1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .page-container { padding-inline: 2rem; }
+  }
+}

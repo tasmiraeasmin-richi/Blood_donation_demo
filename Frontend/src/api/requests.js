@@ -1,0 +1,47 @@
+import { api } from './client';
+import { mapRequest, mapRequestCreate, mapRequestUpdate } from './mappers';
+
+/**
+ * Backend contract (main.py):
+ * - GET /requests -> approved BloodRequest[] (public)
+ * - GET /requests/my -> own requests (auth)
+ * - GET /requests/{id} -> RequestOut (non-approved hidden from non-owners: 404)
+ * - POST /requests {patient_name,blood_group,units_needed,hospital_name,district,contact_phone,required_date,urgency} (auth)
+ * - PUT /requests/{id} partial update, pending + owner only (auth)
+ * - DELETE /requests/{id} -> 204, pending + owner only (auth)
+ * - PATCH /requests/{id}/fulfill (auth, owner, approved only)
+ */
+export async function listPublicRequests() {
+  const data = await api.get('/requests', { auth: false });
+  return (data || []).map(mapRequest);
+}
+
+export async function getRequest(id) {
+  const data = await api.get(`/requests/${id}`, { auth: false });
+  return mapRequest(data);
+}
+
+export async function listMyRequests() {
+  const data = await api.get('/requests/my');
+  return (data || []).map(mapRequest);
+}
+
+export async function createRequest(form) {
+  const data = await api.post('/requests', mapRequestCreate(form));
+  return mapRequest(data);
+}
+
+export async function updateRequest(id, form) {
+  const data = await api.put(`/requests/${id}`, mapRequestUpdate(form));
+  return mapRequest(data);
+}
+
+export async function deleteRequest(id) {
+  await api.delete(`/requests/${id}`);
+  return true;
+}
+
+export async function fulfillRequest(id) {
+  const data = await api.patch(`/requests/${id}/fulfill`, {});
+  return mapRequest(data);
+}
