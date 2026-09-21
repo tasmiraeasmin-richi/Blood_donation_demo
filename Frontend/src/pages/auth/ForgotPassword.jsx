@@ -29,7 +29,7 @@ export default function ForgotPassword() {
     try {
       await forgotPassword(email.trim());
       setSubmitted(true);
-      toast.success('Password reset link sent to your email');
+      toast.success('If that email is registered, a reset link was logged for development');
     } catch (err) {
       setError(err?.message || 'Failed to send reset link. Please try again.');
       toast.error('Something went wrong');
@@ -44,10 +44,10 @@ export default function ForgotPassword() {
         <div className="w-16 h-16 rounded-full bg-[var(--color-success-bg)] flex items-center justify-center mx-auto mb-4">
           <FiMail className="w-8 h-8 text-[var(--color-success)]" />
         </div>
-        <h1 className="text-2xl font-bold text-[var(--color-text)] mb-2">Check Your Email</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-text)] mb-2">Check the Dev Logs</h1>
         <p className="text-[var(--color-text-muted)] text-sm mb-6">
-          We've sent a password reset link to <span className="font-medium text-[var(--color-text)]">{email}</span>.
-          Please check your inbox and follow the instructions.
+          If <span className="font-medium text-[var(--color-text)]">{email}</span> is registered, a password
+          reset link was logged for development (email delivery is not configured in this demo).
         </p>
         <button
           onClick={() => navigate('/login')}

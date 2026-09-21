@@ -109,7 +109,7 @@ def forgot_password(payload: schemas.ForgotPasswordRequest, db: Session = Depend
         db.commit()
         send_reset_email(user.email, raw_token)
 
-    return {"detail": "If that email is registered, a password reset link has been sent."}
+    return {"detail": "If that email is registered, a password reset link has been logged for development (email delivery is not configured)."}
 
 
 @router.post("/reset-password/{token}")

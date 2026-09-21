@@ -17,7 +17,10 @@ export async function listPublicRequests() {
 }
 
 export async function getRequest(id) {
-  const data = await api.get(`/requests/${id}`, { auth: false });
+  // Opportunistic auth (default auth: true): public requests are viewable by
+  // everyone; owners viewing their own non-approved requests need their JWT.
+  // Backend uses optional auth + owner check, so guests never get 401 here.
+  const data = await api.get(`/requests/${id}`);
   return mapRequest(data);
 }
 

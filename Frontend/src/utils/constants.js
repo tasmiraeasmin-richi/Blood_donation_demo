@@ -24,4 +24,4 @@ export const USER_ROLES = ['member', 'admin'];
 export const DONATION_ELIGIBILITY_DAYS = 90;
 
 // API base URL (set via .env)
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';

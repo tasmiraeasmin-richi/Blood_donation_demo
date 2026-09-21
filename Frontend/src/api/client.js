@@ -122,5 +122,5 @@ export const api = {
   post: (path, body, options) => apiFetch(path, { ...options, method: 'POST', body }),
   put: (path, body, options) => apiFetch(path, { ...options, method: 'PUT', body }),
   patch: (path, body, options) => apiFetch(path, { ...options, method: 'PATCH', body }),
-  delete: path => apiFetch(path, { method: 'DELETE' }),
+  delete: (path, options) => apiFetch(path, { ...options, method: 'DELETE' }),
 };

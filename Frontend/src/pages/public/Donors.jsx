@@ -52,11 +52,8 @@ export default function Donors() {
   }, [filters.blood_group, filters.district]);
 
   useEffect(() => {
-    listDonors({ blood_group: filters.blood_group, district: filters.district }).then(
-      data => { setDonors(data); setError(null); setLoading(false); },
-      err => { setError(err?.message || 'Failed to load donors.'); setLoading(false); }
-    );
-  }, [filters.blood_group, filters.district]);
+    loadDonors();
+  }, [loadDonors]);
 
   // Text search stays client-side
   const filteredDonors = useMemo(() => {

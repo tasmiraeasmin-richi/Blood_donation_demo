@@ -47,11 +47,8 @@ export default function RequestDetail() {
   }, [id]);
 
   useEffect(() => {
-    getRequest(id).then(
-      data => { setRequest(data); setError(null); setLoading(false); },
-      err => { setError(err); setLoading(false); }
-    );
-  }, [id]);
+    loadRequest();
+  }, [loadRequest]);
 
   const isOwner = isAuthenticated && user?.id != null && request?.requester_id === user.id;
 
