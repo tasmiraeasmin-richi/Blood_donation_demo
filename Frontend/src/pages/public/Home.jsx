@@ -70,7 +70,7 @@ const colorMap = {
 };
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isMember, isAdmin } = useAuth();
   const [requests, setRequests] = useState(null);
   const [camps, setCamps] = useState(null);
   const [donors, setDonors] = useState(null);
@@ -147,13 +147,18 @@ export default function Home() {
                 <FiSearch className="w-4 h-4" />
                 Find Blood
               </Link>
-              <Link
-                to="/signup"
-                className="flex items-center gap-2 btn btn-outline border-white/40 text-white hover:bg-white/10 hover:border-white/60 px-6"
-              >
-                <FiUserPlus className="w-4 h-4" />
-                Become a Donor
-              </Link>
+              {/* Become a Donor: guests -> login (returns to /become-donor),
+                  members -> donor availability page. Hidden for admins. */}
+              {!isAdmin && (
+                <Link
+                  to={isAuthenticated && isMember ? '/become-donor' : isAuthenticated ? '/dashboard' : '/login'}
+                  state={isAuthenticated ? undefined : { from: { pathname: '/become-donor' } }}
+                  className="flex items-center gap-2 btn btn-outline border-white/40 text-white hover:bg-white/10 hover:border-white/60 px-6"
+                >
+                  <FiUserPlus className="w-4 h-4" />
+                  Become a Donor
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -3,9 +3,9 @@ import { mapRequest, mapRequestCreate, mapRequestUpdate } from './mappers';
 
 /**
  * Backend contract (main.py):
- * - GET /requests -> approved BloodRequest[] (public)
- * - GET /requests/my -> own requests (auth)
- * - GET /requests/{id} -> RequestOut (non-approved hidden from non-owners: 404)
+ * - GET /requests -> approved RequestListOut[] (public, no contact_phone)
+ * - GET /requests/my -> own requests (auth, full RequestOut incl. phone)
+ * - GET /requests/{id} -> RequestDetailOut (contact_phone only when authenticated)
  * - POST /requests {patient_name,blood_group,units_needed,hospital_name,district,contact_phone,required_date,urgency} (auth)
  * - PUT /requests/{id} partial update, pending + owner only (auth)
  * - DELETE /requests/{id} -> 204, pending + owner only (auth)

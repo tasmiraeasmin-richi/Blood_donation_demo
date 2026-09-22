@@ -178,6 +178,47 @@ class RequestReject(BaseModel):
     rejection_reason: str = Field(..., min_length=1)
 
 
+class RequestListOut(BaseModel):
+    """Public request-list item. contact_phone is intentionally excluded."""
+
+    id: int
+    request_code: str
+    requester_id: int
+    patient_name: str
+    blood_group: str
+    units_needed: int
+    hospital_name: str
+    district: str
+    required_date: datetime
+    urgency: str
+    status: str
+    rejection_reason: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class RequestDetailOut(BaseModel):
+    """Request detail. contact_phone is only populated for authenticated users."""
+
+    id: int
+    request_code: str
+    requester_id: int
+    patient_name: str
+    blood_group: str
+    units_needed: int
+    hospital_name: str
+    district: str
+    contact_phone: Optional[str] = None
+    required_date: datetime
+    urgency: str
+    status: str
+    rejection_reason: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
 class OfferOut(BaseModel):
     id: int
     request_id: int

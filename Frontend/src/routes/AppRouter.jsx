@@ -31,6 +31,7 @@ import EditRequest from '../pages/member/EditRequest';
 import MyOffers from '../pages/member/MyOffers';
 import RequestOffers from '../pages/member/RequestOffers';
 import MyDonations from '../pages/member/MyDonations';
+import BecomeDonor from '../pages/member/BecomeDonor';
 import Profile from '../pages/member/Profile';
 
 // Admin pages
@@ -88,6 +89,7 @@ const router = createBrowserRouter([
       { path: '/dashboard/requests/:id/offers', element: <RequestOffers /> },
       { path: '/dashboard/offers', element: <MyOffers /> },
       { path: '/dashboard/donations', element: <MyDonations /> },
+      { path: '/become-donor', element: <BecomeDonor /> },
       { path: '/profile', element: <Profile /> },
     ],
   },

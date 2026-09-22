@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FiArrowLeft, FiMapPin, FiCalendar, FiUser, FiPhone,
   FiAlertTriangle, FiAlertCircle, FiCheckCircle, FiXCircle,
@@ -12,6 +12,7 @@ import UrgencyBadge from '../../components/ui/badges/UrgencyBadge';
 import StatusBadge from '../../components/ui/badges/StatusBadge';
 import LoadingState from '../../components/ui/feedback/LoadingState';
 import ErrorState from '../../components/ui/feedback/ErrorState';
+import ConfirmationModal from '../../components/ui/modals/ConfirmationModal';
 import { formatDate } from '../../utils/helpers';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -25,6 +26,7 @@ const urgencyStyles = {
 export default function RequestDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, isMember, user } = useAuth();
 
   const [request, setRequest] = useState(null);
@@ -32,6 +34,7 @@ export default function RequestDetail() {
   const [error, setError] = useState(null);
   const [offering, setOffering] = useState(false);
   const [offered, setOffered] = useState(false);
+  const [confirmingOffer, setConfirmingOffer] = useState(false);
   const [fulfilling, setFulfilling] = useState(false);
 
   const loadRequest = useCallback(async () => {
@@ -57,7 +60,8 @@ export default function RequestDetail() {
     try {
       await createOffer(request.id);
       setOffered(true);
-      toast.success('Donation offer submitted');
+      setConfirmingOffer(false);
+      toast.success('Blood Donation Offer submitted');
     } catch (err) {
       toast.error(err?.message || 'Failed to submit offer');
     } finally {
@@ -248,24 +252,47 @@ export default function RequestDetail() {
             </div>
           )}
 
-          {/* ── Contact information placeholder ─────────────────── */}
+          {/* ── Contact information ─────────────────────────────── */}
           <div className="card-rs p-6">
             <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">Contact Information</h2>
             {isAuthenticated && (isMember || user?.role === 'admin') ? (
-              <div className="bg-[var(--color-info-bg)] rounded-lg p-4">
-                <div className="flex items-center gap-2 text-[var(--color-info)] mb-2">
-                  <FiPhone className="w-4 h-4" />
-                  <span className="text-sm font-medium">Phone Number</span>
+              request.contact_phone ? (
+                <div className="bg-[var(--color-info-bg)] rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-[var(--color-info)] mb-2">
+                    <FiPhone className="w-4 h-4" />
+                    <span className="text-sm font-medium">Requester Phone</span>
+                  </div>
+                  <a
+                    href={`tel:${request.contact_phone}`}
+                    className="btn btn-sm bg-[var(--color-success)] text-white border-0 gap-2"
+                  >
+                    <FiPhone className="w-4 h-4" />
+                    Call Requester: {request.contact_phone}
+                  </a>
+                  <p className="text-xs text-[var(--color-text-muted)] mt-2">
+                    Visible only to logged-in members. Please be respectful when calling.
+                  </p>
                 </div>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  Contact information will be visible after your donation offer is accepted by the requester.
-                </p>
-              </div>
+              ) : (
+                <div className="bg-[var(--color-surface-3)] rounded-lg p-4">
+                  <p className="text-sm text-[var(--color-text-muted)]">
+                    Contact information is not available for this request.
+                  </p>
+                </div>
+              )
             ) : (
               <div className="bg-[var(--color-surface-3)] rounded-lg p-4">
-                <p className="text-sm text-[var(--color-text-muted)]">
-                  Please log in as a donor to view contact details after your offer is accepted.
+                <p className="text-sm text-[var(--color-text-muted)] mb-3">
+                  Log in to view the requester&apos;s contact number.
                 </p>
+                <Link
+                  to="/login"
+                  state={{ from: location }}
+                  className="btn btn-sm btn-outline border-[var(--color-primary)] text-[var(--color-primary)] gap-2"
+                >
+                  <FiPhone className="w-4 h-4" />
+                  Login to Contact Requester
+                </Link>
               </div>
             )}
           </div>
@@ -289,7 +316,7 @@ export default function RequestDetail() {
                 </div>
               ) : (
                 <button
-                  onClick={handleOffer}
+                  onClick={() => setConfirmingOffer(true)}
                   disabled={offering || request.status !== 'approved'}
                   className="btn bg-[var(--color-primary)] text-white border-0 w-full gap-2 disabled:opacity-60"
                 >
@@ -298,7 +325,7 @@ export default function RequestDetail() {
                   ) : (
                     <FiHeart className="w-4 h-4" />
                   )}
-                  Donate Blood
+                  Offer Blood
                 </button>
               )
             ) : (
@@ -310,6 +337,7 @@ export default function RequestDetail() {
                 </p>
                 <Link
                   to="/login"
+                  state={isAuthenticated ? undefined : { from: location }}
                   className="btn btn-sm btn-outline border-[var(--color-primary)] text-[var(--color-primary)] w-full gap-2"
                 >
                   <FiHeart className="w-4 h-4" />
@@ -318,6 +346,17 @@ export default function RequestDetail() {
               </div>
             )}
           </div>
+
+          <ConfirmationModal
+            open={confirmingOffer}
+            onClose={() => setConfirmingOffer(false)}
+            onConfirm={handleOffer}
+            title="Offer Blood"
+            message={`Confirm your blood donation offer for ${request.patient_name} (${request.blood_group}) at ${request.hospital}?`}
+            confirmLabel="Confirm Offer"
+            variant="info"
+            loading={offering}
+          />
 
           {/* ── Owner actions ───────────────────────────────────── */}
           <div className="card-rs p-6">

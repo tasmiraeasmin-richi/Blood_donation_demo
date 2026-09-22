@@ -15,7 +15,7 @@ from deps import get_current_user, get_optional_current_user
 from eligibility import days_until_eligible, is_donor_eligible
 from request_codes import generate_request_code
 from router import auth, admin
-from serializers import my_offer_to_out, offer_to_detail
+from serializers import my_offer_to_out, offer_to_detail, request_to_detail_out, request_to_list_out
 from security import utcnow_naive
 from seed import seed_admin
 
@@ -123,9 +123,10 @@ def create_request(
     return new_request
 
 
-@app.get("/requests", response_model=List[schemas.RequestOut])
+@app.get("/requests", response_model=List[schemas.RequestListOut])
 def list_public_requests(db: Session = Depends(get_db)):
-    return db.query(models.BloodRequest).filter(models.BloodRequest.status == "approved").all()
+    requests = db.query(models.BloodRequest).filter(models.BloodRequest.status == "approved").all()
+    return [request_to_list_out(r) for r in requests]
 
 
 @app.get("/requests/my", response_model=List[schemas.RequestOut])
@@ -140,7 +141,7 @@ def list_my_requests(
     )
 
 
-@app.get("/requests/{request_id}", response_model=schemas.RequestOut)
+@app.get("/requests/{request_id}", response_model=schemas.RequestDetailOut)
 def get_request(
     request_id: int,
     db: Session = Depends(get_db),
@@ -154,7 +155,7 @@ def get_request(
     if req.status != "approved" and not is_owner:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Request not found")
 
-    return req
+    return request_to_detail_out(req, show_contact=current_user is not None)
 
 
 @app.put("/requests/{request_id}", response_model=schemas.RequestOut)

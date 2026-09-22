@@ -1,12 +1,13 @@
 import { NavLink, Link } from 'react-router-dom';
 import {
   FiDroplet, FiHome, FiFileText, FiPlusCircle,
-  FiGift, FiHeart, FiUser, FiLogOut, FiX
+  FiGift, FiHeart, FiUser, FiLogOut, FiX, FiUserPlus
 } from 'react-icons/fi';
 import { useAuth } from '../../contexts/AuthContext';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: FiHome, end: true },
+  { to: '/become-donor', label: 'Become a Donor', icon: FiUserPlus },
   { to: '/dashboard/requests', label: 'My Requests', icon: FiFileText },
   { to: '/dashboard/requests/create', label: 'Create Request', icon: FiPlusCircle },
   { to: '/dashboard/offers', label: 'My Offers', icon: FiGift },

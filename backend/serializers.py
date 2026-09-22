@@ -33,6 +33,41 @@ def offer_to_detail(offer: models.Offer) -> schemas.OfferDetailOut:
     )
 
 
+def request_to_list_out(req: models.BloodRequest) -> schemas.RequestListOut:
+    return schemas.RequestListOut(
+        id=req.id,
+        request_code=req.request_code,
+        requester_id=req.requester_id,
+        patient_name=req.patient_name,
+        blood_group=req.blood_group,
+        units_needed=req.units_needed,
+        hospital_name=req.hospital_name,
+        district=req.district,
+        required_date=req.required_date,
+        urgency=req.urgency,
+        status=req.status,
+        rejection_reason=req.rejection_reason,
+    )
+
+
+def request_to_detail_out(req: models.BloodRequest, show_contact: bool) -> schemas.RequestDetailOut:
+    return schemas.RequestDetailOut(
+        id=req.id,
+        request_code=req.request_code,
+        requester_id=req.requester_id,
+        patient_name=req.patient_name,
+        blood_group=req.blood_group,
+        units_needed=req.units_needed,
+        hospital_name=req.hospital_name,
+        district=req.district,
+        contact_phone=req.contact_phone if show_contact else None,
+        required_date=req.required_date,
+        urgency=req.urgency,
+        status=req.status,
+        rejection_reason=req.rejection_reason,
+    )
+
+
 def my_offer_to_out(offer: models.Offer, donation_date=None) -> schemas.MyOfferOut:
     req = offer.request
     return schemas.MyOfferOut(
