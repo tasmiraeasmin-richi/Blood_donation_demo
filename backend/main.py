@@ -1,4 +1,5 @@
 from typing import List, Optional
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,10 +16,19 @@ from request_codes import generate_request_code
 from router import auth, admin
 from serializers import my_offer_to_out, offer_to_detail
 from security import utcnow_naive
+from seed import seed_admin
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="RaktoSetu API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Idempotent: creates admin@raktosetu.com once, skips if it exists.
+    seed_admin()
+    yield
+
+
+app = FastAPI(title="RaktoSetu API", lifespan=lifespan)
 
 origins = [
     "http://localhost:5173",
