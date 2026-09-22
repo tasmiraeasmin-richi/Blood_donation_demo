@@ -48,17 +48,17 @@ export default function Modal({ open, onClose, title, children, size = 'md', cla
       {/* Panel */}
       <div
         ref={dialogRef}
-        className={`relative w-full ${sizeMap[size] || sizeMap.md} bg-[var(--color-surface)] rounded-xl shadow-[var(--shadow-modal)] max-h-[90vh] flex flex-col ${className}`}
+        className={`relative box-border w-full min-w-0 ${sizeMap[size] || sizeMap.md} bg-[var(--color-surface)] rounded-xl shadow-[var(--shadow-modal)] max-h-[90vh] flex flex-col overflow-x-hidden ${className}`}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-surface-3)]">
-            <h2 id="modal-title" className="text-lg font-semibold text-[var(--color-text)]">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 border-b border-[var(--color-surface-3)]">
+            <h2 id="modal-title" className="flex-1 min-w-0 text-lg font-semibold text-[var(--color-text)] break-words">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="p-1 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]"
+              className="shrink-0 p-1 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-3)] hover:text-[var(--color-text)]"
               aria-label="Close"
             >
               <FiX className="w-5 h-5" />
@@ -67,7 +67,7 @@ export default function Modal({ open, onClose, title, children, size = 'md', cla
         )}
 
         {/* Body */}
-        <div className="px-6 py-4 overflow-y-auto flex-1">{children}</div>
+        <div className="min-w-0 px-4 py-3 sm:px-6 sm:py-4 overflow-x-hidden overflow-y-auto flex-1 break-words">{children}</div>
       </div>
     </div>
   );

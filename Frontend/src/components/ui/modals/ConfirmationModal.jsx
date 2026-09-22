@@ -33,12 +33,12 @@ export default function ConfirmationModal({
 
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
-      <div className="flex flex-col items-center text-center">
+      <div className="flex min-w-0 flex-col items-center text-center">
         <div className={`w-12 h-12 rounded-full ${config.bgClass} flex items-center justify-center mb-4`}>
           <FiAlertTriangle className={`w-6 h-6 ${config.iconClass}`} />
         </div>
-        <p className="text-sm text-[var(--color-text-muted)] mb-6 max-w-xs">{message}</p>
-        <div className="flex gap-3 w-full">
+        <p className="w-full min-w-0 max-w-xs text-sm text-[var(--color-text-muted)] mb-6 [overflow-wrap:anywhere]">{message}</p>
+        <div className="flex w-full min-w-0 flex-col sm:flex-row gap-3">
           <SecondaryButton onClick={onClose} fullWidth disabled={loading}>
             {cancelLabel}
           </SecondaryButton>
