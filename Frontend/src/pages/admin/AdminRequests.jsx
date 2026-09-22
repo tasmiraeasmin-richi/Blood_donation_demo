@@ -349,7 +349,7 @@ export default function AdminRequests() {
       )}
 
       {/* ── Details modal ────────────────────────────────── */}
-      <Modal open={!!detailRequest} onClose={() => setDetailRequest(null)} title={detailRequest ? `Request ${detailRequest.request_code}` : ''} size="lg">
+      <Modal open={!!detailRequest} onClose={() => setDetailRequest(null)} title={detailRequest ? `Request ${detailRequest.request_code}` : ''} size="md">
         {detailRequest && (
           <div className="space-y-5">
             <div className="flex flex-wrap items-center gap-2">
