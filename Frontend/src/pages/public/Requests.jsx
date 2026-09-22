@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { FiFileText } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiFileText, FiPlus } from 'react-icons/fi';
 import { listPublicRequests } from '../../api/requests';
+import { useAuth } from '../../contexts/AuthContext';
 import { BLOOD_GROUPS, URGENCY_LEVELS } from '../../utils/constants';
 import SearchBar from '../../components/ui/data/SearchBar';
 import FilterPanel from '../../components/ui/data/FilterPanel';
@@ -27,16 +29,23 @@ const filterConfig = [
 ];
 
 const sortOptions = [
+  { value: 'latest', label: 'Latest First' },
+  { value: 'oldest', label: 'Oldest First' },
+  { value: 'urgency_desc', label: 'Most Urgent' },
+  { value: 'units_desc', label: 'Most Units Needed' },
   { value: 'required_date_asc', label: 'Required Date (Earliest)' },
   { value: 'required_date_desc', label: 'Required Date (Latest)' },
-  { value: 'urgency_desc', label: 'Urgency (Highest First)' },
-  { value: 'urgency_asc', label: 'Urgency (Lowest First)' },
 ];
 
 const urgencyOrder = { critical: 3, urgent: 2, normal: 1 };
 
 function sortRequests(requests, sortValue) {
   if (!sortValue) return requests;
+
+  // 'latest'/'oldest' sort by id: ids auto-increment, so higher id = newer.
+  if (sortValue === 'latest') return [...requests].sort((a, b) => b.id - a.id);
+  if (sortValue === 'oldest') return [...requests].sort((a, b) => a.id - b.id);
+  if (sortValue === 'units_desc') return [...requests].sort((a, b) => (b.units || 0) - (a.units || 0));
 
   const [field, order] = sortValue.split('_').reduce(
     (acc, part, i, arr) => {
@@ -66,6 +75,7 @@ function sortRequests(requests, sortValue) {
 }
 
 export default function Requests() {
+  const { isAdmin } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -89,11 +99,8 @@ export default function Requests() {
   }, []);
 
   useEffect(() => {
-    listPublicRequests().then(
-      data => { setRequests(data); setError(null); setLoading(false); },
-      err => { setError(err?.message || 'Failed to load requests.'); setLoading(false); }
-    );
-  }, []);
+    loadRequests();
+  }, [loadRequests]);
 
   const filteredRequests = useMemo(() => {
     let result = [...requests];
@@ -181,13 +188,23 @@ export default function Requests() {
   return (
     <div className="page-container py-10">
       {/* ── Header ─────────────────────────────────────────────── */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Blood Requests</h1>
-        <p className="text-[var(--color-text-muted)] max-w-2xl">
-          Browse approved blood donation requests. Find patients in need of blood
-          by blood group, urgency, or location. Contact information is only visible
-          to donors whose offers are accepted.
-        </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Blood Requests</h1>
+          <p className="text-[var(--color-text-muted)] max-w-2xl">
+            Find and support people who need blood. Browse approved blood donation
+            requests by blood group, urgency, or location.
+          </p>
+        </div>
+        {!isAdmin && (
+          <Link
+            to="/dashboard/requests/create"
+            className="btn bg-[var(--color-primary)] text-white border-0 gap-2 shrink-0 w-full sm:w-auto"
+          >
+            <FiPlus className="w-4 h-4" />
+            Request Blood
+          </Link>
+        )}
       </div>
 
       {/* ── Search & Filters ───────────────────────────────────── */}

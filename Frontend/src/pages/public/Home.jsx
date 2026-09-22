@@ -10,7 +10,9 @@ import { listCamps } from '../../api/camps';
 import { listDonors } from '../../api/donors';
 import RequestCard from '../../components/cards/RequestCard';
 import CampCard from '../../components/cards/CampCard';
+import DonorCard from '../../components/cards/DonorCard';
 import StatCard from '../../components/cards/StatCard';
+import { useAuth } from '../../contexts/AuthContext';
 
 const quickActions = [
   {
@@ -68,6 +70,7 @@ const colorMap = {
 };
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
   const [requests, setRequests] = useState(null);
   const [camps, setCamps] = useState(null);
   const [donors, setDonors] = useState(null);
@@ -99,6 +102,14 @@ export default function Home() {
 
   const upcomingCamps = (camps || []).filter(c => c.status === 'upcoming');
   const activeRequests = requests || [];
+  const availableDonors = donors || [];
+
+  // Home previews show live API data only (max 3 each). Empty lists render a
+  // simple empty state below — no demo/fallback data is used anywhere.
+  const loaded = requests !== null && camps !== null && donors !== null;
+  const shownCamps = upcomingCamps.slice(0, 3);
+  const shownRequests = activeRequests.slice(0, 3);
+  const shownDonors = availableDonors.slice(0, 3);
 
   return (
     <div>
@@ -260,8 +271,49 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── AVAILABLE DONORS ─────────────────────────────────────── */}
+      {loaded && (
+        <section className="py-12 sm:py-16 bg-white">
+          <div className="page-container">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold mb-1">Available Donors</h2>
+                <p className="text-[var(--color-text-muted)]">
+                  Meet some of the donors ready to help.
+                </p>
+              </div>
+              <Link
+                to="/donors"
+                className="hidden sm:flex items-center gap-1 text-sm font-medium text-[var(--color-primary)] hover:gap-2 transition-all"
+              >
+                View All <FiArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {shownDonors.length === 0 ? (
+              <p className="text-[var(--color-text-muted)]">No donors found.</p>
+            ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {shownDonors.map(donor => (
+                <DonorCard key={donor.id} donor={donor} showPhone={isAuthenticated} />
+              ))}
+            </div>
+            )}
+
+            <div className="sm:hidden mt-6 text-center">
+              <Link
+                to="/donors"
+                className="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-primary)]"
+              >
+                View All Donors <FiArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── UPCOMING BLOOD CAMPS ──────────────────────────────────── */}
-      {upcomingCamps.length > 0 && (
+      {loaded && (
         <section className="py-12 sm:py-16 bg-white">
           <div className="page-container">
             <div className="flex items-center justify-between mb-8">
@@ -279,11 +331,15 @@ export default function Home() {
               </Link>
             </div>
 
+            {shownCamps.length === 0 ? (
+              <p className="text-[var(--color-text-muted)]">No blood camps available.</p>
+            ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {upcomingCamps.map(camp => (
+              {shownCamps.map(camp => (
                 <CampCard key={camp.id} camp={camp} />
               ))}
             </div>
+            )}
 
             <div className="sm:hidden mt-6 text-center">
               <Link
@@ -298,7 +354,7 @@ export default function Home() {
       )}
 
       {/* ─── RECENT / ACTIVE BLOOD REQUESTS ────────────────────────── */}
-      {activeRequests.length > 0 && (
+      {loaded && (
         <section className="py-12 sm:py-16 bg-[var(--color-surface-2)]">
           <div className="page-container">
             <div className="flex items-center justify-between mb-8">
@@ -316,11 +372,15 @@ export default function Home() {
               </Link>
             </div>
 
+            {shownRequests.length === 0 ? (
+              <p className="text-[var(--color-text-muted)]">No blood requests found.</p>
+            ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {activeRequests.map(request => (
+              {shownRequests.map(request => (
                 <RequestCard key={request.id} request={request} />
               ))}
             </div>
+            )}
 
             <div className="sm:hidden mt-6 text-center">
               <Link

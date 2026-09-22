@@ -14,7 +14,7 @@ export default function Signup() {
 
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', password: '', confirmPassword: '',
-    bloodGroup: '', district: '', isAvailable: true,
+    bloodGroup: '', district: '', agreedToTerms: false,
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -33,14 +33,14 @@ export default function Signup() {
 
     if (!formData.password) errs.password = 'Password is required';
     else if (formData.password.length < 6) errs.password = 'Password must be at least 6 characters';
-    else if (!/[A-Z]/.test(formData.password)) errs.password = 'Must contain an uppercase letter';
-    else if (!/\d/.test(formData.password)) errs.password = 'Must contain a number';
+    //else if (!/[A-Z]/.test(formData.password)) errs.password = 'Must contain an uppercase letter';
+    //else if (!/\d/.test(formData.password)) errs.password = 'Must contain a number';
 
     if (formData.password !== formData.confirmPassword) errs.confirmPassword = 'Passwords do not match';
 
     if (!formData.bloodGroup) errs.bloodGroup = 'Blood group is required';
     if (!formData.district) errs.district = 'District is required';
-
+    if (!formData.agreedToTerms) errs.agreedToTerms = 'Please accept the Terms and Conditions';
     return errs;
   }, [formData]);
 
@@ -89,7 +89,7 @@ export default function Signup() {
         <FormInput
           label="Full Name"
           type="text"
-          placeholder="John Doe"
+          placeholder="Enter your full name"
           value={formData.name}
           onChange={e => handleChange('name', e.target.value)}
           error={errors.name}
@@ -98,9 +98,9 @@ export default function Signup() {
         />
 
         <FormInput
-          label="Email Address"
+          label="Email"
           type="email"
-          placeholder="you@example.com"
+          placeholder="Enter your email"
           value={formData.email}
           onChange={e => handleChange('email', e.target.value)}
           error={errors.email}
@@ -109,34 +109,14 @@ export default function Signup() {
         />
 
         <FormInput
-          label="Phone Number"
+          label="Phone"
           type="tel"
-          placeholder="+8801XXXXXXXXX"
+          placeholder="Enter your phone number"
           value={formData.phone}
           onChange={e => handleChange('phone', e.target.value)}
           error={errors.phone}
           required
           autoComplete="tel"
-        />
-
-        <PasswordInput
-          label="Password"
-          placeholder="Min 6 chars, 1 uppercase, 1 number"
-          value={formData.password}
-          onChange={e => handleChange('password', e.target.value)}
-          error={errors.password}
-          required
-          autoComplete="new-password"
-        />
-
-        <PasswordInput
-          label="Confirm Password"
-          placeholder="Re-enter your password"
-          value={formData.confirmPassword}
-          onChange={e => handleChange('confirmPassword', e.target.value)}
-          error={errors.confirmPassword}
-          required
-          autoComplete="new-password"
         />
 
         <SelectInput
@@ -165,16 +145,39 @@ export default function Signup() {
           ))}
         </SelectInput>
 
+        <PasswordInput
+          label="Password"
+          placeholder="Create password"
+          value={formData.password}
+          onChange={e => handleChange('password', e.target.value)}
+          error={errors.password}
+          required
+          autoComplete="new-password"
+        />
+
+        <PasswordInput
+          label="Confirm Password"
+          placeholder="Confirm password"
+          value={formData.confirmPassword}
+          onChange={e => handleChange('confirmPassword', e.target.value)}
+          error={errors.confirmPassword}
+          required
+          autoComplete="new-password"
+        />
+
         <div className="space-y-1">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
-              checked={formData.isAvailable}
-              onChange={e => handleChange('isAvailable', e.target.checked)}
+              checked={formData.agreedToTerms}
+              onChange={e => handleChange('agreedToTerms', e.target.checked)}
               className="w-4 h-4 rounded border-[var(--color-surface-3)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
             />
-            <span className="text-sm text-[var(--color-text)]">I am available to donate blood</span>
+            <span className="text-sm text-[var(--color-text)]">I agree to the Terms and Conditions</span>
           </label>
+          {errors.agreedToTerms && (
+            <p className="text-xs text-[var(--color-danger)] mt-0.5">{errors.agreedToTerms}</p>
+          )}
         </div>
 
         {serverError && (

@@ -126,7 +126,7 @@ export default function MyDonations() {
           message="Your donation history will appear here once you've donated."
           icon={FiHeart}
           action={
-            <PrimaryButton onClick={() => navigate('/dashboard/requests')}>
+            <PrimaryButton onClick={() => navigate('/dashboard/requests/create')}>
               <FiHeart className="w-4 h-4" />
               Create a Request
             </PrimaryButton>

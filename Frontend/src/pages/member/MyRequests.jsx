@@ -120,7 +120,7 @@ export default function MyRequests() {
   const handleResetFilters = () => { setFilters({ status: '', urgency: '' }); setSearch(''); setSort(''); setCurrentPage(1); };
   const handleSort = val => { setSort(val); setCurrentPage(1); };
 
-  const handleView = (id) => navigate(`/dashboard/requests/${id}/edit`);
+  const handleView = (id) => navigate(`/requests/${id}`);
 
   const handleDeleteClick = (request) => setDeleteTarget(request);
 

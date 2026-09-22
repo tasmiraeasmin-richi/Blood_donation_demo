@@ -42,16 +42,8 @@ export default function RequestOffers() {
   }, [id]);
 
   useEffect(() => {
-    Promise.all([getRequest(id), listRequestOffers(id)]).then(
-      ([requestData, offersData]) => {
-        setRequest(requestData);
-        setRequestOffers(offersData);
-        setError(null);
-        setLoading(false);
-      },
-      err => { setError(err); setLoading(false); }
-    );
-  }, [id]);
+    loadOffers();
+  }, [loadOffers]);
 
   const handleAction = async (offerId, type) => {
     setActionLoading(true);

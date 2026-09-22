@@ -30,8 +30,10 @@ export async function login(email, password) {
   return { token: tokenData.access_token, user: mapUser(profile) };
 }
 
-export async function getProfile() {
-  const profile = await api.get('/user');
+export async function getProfile(explicitToken = null) {
+  // explicitToken is used for startup validation in AuthContext, where the
+  // API client's token getter (a ref mirror) is not populated yet.
+  const profile = await api.get('/user', explicitToken ? { token: explicitToken } : undefined);
   return mapUser(profile);
 }
 

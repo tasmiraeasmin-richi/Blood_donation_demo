@@ -21,7 +21,10 @@ function validateForm(data) {
   if (!data.contact_phone.trim()) errs.contact_phone = 'Contact phone is required';
   else if (!/^\+?[\d\s-]{8,}$/.test(data.contact_phone)) errs.contact_phone = 'Enter a valid phone number';
   if (!data.required_date) errs.required_date = 'Required date is required';
-  else if (new Date(data.required_date) < new Date()) errs.required_date = 'Date must be in the future';
+  // Compare calendar dates (not timestamps): the service sends end-of-day,
+  // so a request needed today is valid — only past days are rejected,
+  // matching the backend's "required_date cannot be in the past" check.
+  else if (data.required_date < new Date().toLocaleDateString('en-CA')) errs.required_date = 'Date must be in the future';
   if (!data.urgency) errs.urgency = 'Urgency is required';
   return errs;
 }

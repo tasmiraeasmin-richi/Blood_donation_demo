@@ -100,7 +100,10 @@ export async function apiFetch(path, { method = 'GET', body, params, auth = true
   }
 
   if (!response.ok) {
-    if (response.status === 401 && unauthorizedHandler) {
+    // Only end the session when the failing request actually carried a
+    // token (expired/invalid session). Public/credential endpoints
+    // (auth: false, e.g. a failed login) must not wipe an existing session.
+    if (response.status === 401 && bearer && unauthorizedHandler) {
       try {
         unauthorizedHandler();
       } catch {

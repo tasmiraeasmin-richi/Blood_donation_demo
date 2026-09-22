@@ -151,7 +151,7 @@ export default function MyOffers() {
           message="Try adjusting your search or filters, or make a new offer on a request."
           icon={FiFileText}
           action={
-            <PrimaryButton onClick={() => navigate('/dashboard/requests')}>
+            <PrimaryButton onClick={() => navigate('/requests')}>
               <FiFileText className="w-4 h-4" />
               Browse Requests
             </PrimaryButton>
