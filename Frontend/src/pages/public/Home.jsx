@@ -145,7 +145,7 @@ export default function Home() {
                 className="flex items-center gap-2 btn bg-white text-[var(--color-primary)] hover:bg-white/90 border-0 font-semibold px-6"
               >
                 <FiSearch className="w-4 h-4" />
-                Find Blood
+                See Request
               </Link>
               {/* Become a Donor: guests -> login (returns to /become-donor),
                   members -> donor availability page. Hidden for admins. */}

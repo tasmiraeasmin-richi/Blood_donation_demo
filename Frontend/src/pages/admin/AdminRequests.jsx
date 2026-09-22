@@ -395,12 +395,12 @@ export default function AdminRequests() {
               Approve request <span className="font-mono font-medium text-[var(--color-text)]">{approveTarget.request_code}</span> for{' '}
               <span className="font-medium text-[var(--color-text)]">{approveTarget.patient_name}</span>? It will become visible for donor offers.
             </p>
-            <div className="flex gap-3">
-              <SecondaryButton onClick={() => setApproveTarget(null)} fullWidth disabled={actionLoading}>
+            <div className="flex w-full gap-4">
+              <SecondaryButton onClick={() => setApproveTarget(null)} className="flex-1 min-w-0" disabled={actionLoading}>
                 Cancel
               </SecondaryButton>
-              <PrimaryButton onClick={handleApprove} fullWidth loading={actionLoading}>
-                Approve
+              <PrimaryButton onClick={handleApprove} className="px-6 whitespace-nowrap shrink-0" loading={actionLoading}>
+                Approve Request
               </PrimaryButton>
             </div>
           </div>
