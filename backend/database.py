@@ -14,7 +14,11 @@ if not SQLALCHEMY_DATABASE_URL:
         "Set DATABASE_URL in backend/.env to your Supabase PostgreSQL connection string."
     )
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    pool_pre_ping=True,  # drop stale pooled connections instead of hanging on them
+    connect_args={"connect_timeout": 10},  # fail fast with a clear error if DB is unreachable
+)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

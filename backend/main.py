@@ -1,5 +1,6 @@
 from typing import List, Optional
 from contextlib import asynccontextmanager
+import logging
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,10 +22,19 @@ from seed import seed_admin
 Base.metadata.create_all(bind=engine)
 
 
+logger = logging.getLogger("raktosetu.startup")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Idempotent: creates admin@raktosetu.com once, skips if it exists.
-    seed_admin()
+    try:
+        seed_admin()
+    except Exception:
+        # Never start silently without the seed: a DB problem must show up
+        # as a loud startup error, not an app that hangs on every request.
+        logger.exception("Startup seed failed: database unreachable or seed error; refusing to start.")
+        raise
     yield
 
 
@@ -35,6 +45,8 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
 ]
 
 app.add_middleware(
